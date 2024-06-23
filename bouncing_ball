@@ -1,0 +1,64 @@
+"""
+File: bouncing_ball
+Name: Yi Ping
+-------------------------
+TODO:
+Create a bouncing ball at (START_X, START_Y).
+Click to start falling ball until touching the bottom, during the process of falling, any click can't impact the ball.
+Each bounce reduces y velocity to REDUCE of itself, but x keeps the same pace.
+There are only triple click to falling ball,over triple click, the ball only stay at the beginning position .
+"""
+
+from campy.graphics.gobjects import GOval
+from campy.graphics.gwindow import GWindow
+from campy.gui.events.timer import pause
+from campy.gui.events.mouse import onmouseclicked
+
+VX = 3
+DELAY = 50
+GRAVITY = 1
+SIZE = 20
+REDUCE = 0.9
+START_X = 30
+START_Y = 40
+click_number = 0
+circle = GOval(SIZE, SIZE)
+window = GWindow(800, 500, title='bouncing_ball.py')
+
+
+def main():
+    """
+    This program simulates a bouncing ball at (START_X, START_Y)
+    that has VX as x velocity and 0 as y velocity. Each bounce reduces
+    y velocity to REDUCE of itself.
+    """
+    circle.filled = True
+    circle.fill_color = "magenta"
+    circle.color = "magenta"
+    window.add(circle, x=START_X, y=START_Y)
+    onmouseclicked(click)
+
+
+def click(event):
+    global click_number
+    vx = VX
+    vy = 0
+    if click_number < 3 and event.x is not None and circle.x is START_X:  # click to start and click number < 3
+        click_number += 1
+        while True:
+            vx = vx         # the move quantity x
+            vy += GRAVITY   # the move quantity y
+            circle.move(vx, vy)
+            if circle.y + circle.height >= window.height and vy > 0:
+                vy = -vy * REDUCE
+            if circle.x + circle.width > window.width:
+                window.remove(circle)
+                window.add(circle, x=START_X, y=START_Y)
+                break
+            pause(DELAY)
+    else:                    # click number >= 3
+        pass
+
+
+if __name__ == "__main__":
+    main()
